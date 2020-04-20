@@ -64,7 +64,11 @@ body {
     font-weight: bold; }
 
 .list-horizontal li {
-  display: inline-block; }
+  display: inline-block;
+  padding-right: 10px; }
+
+a {
+  text-decoration: none; }
 
 /* Authors */
 .authors li {
