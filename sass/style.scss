@@ -123,3 +123,31 @@ a{
     margin: 0 10px 0 0;
   }
 }
+.tags {
+  display: inline-flex;
+  flex-wrap: wrap;
+}
+.tag-size-1 {
+  color: #f1c40f;
+  padding-right: 5px;
+}
+.tag-size-2 {
+  color: #e67e22;
+  padding-right: 5px;
+}
+.tag-size-3 {
+  color: #e74c3c;
+  padding-right: 5px;
+}
+.tag-size-4 {
+  color: #27ae60;
+  font-size: 18px;
+  font-weight: bolder;
+  padding-right: 5px;
+}
+.tag-size-5 {
+  color: #2980b9;
+  font-size: 18px;
+  font-weight: bold;
+  padding-right: 5px;
+}

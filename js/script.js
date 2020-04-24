@@ -54,8 +54,10 @@ const optArticleSelector = '.post',
   optTagsListenerSelector = '.list-horizontal a',
   optArticleAuthorSelector = '.post-author',
   optAuthorListenerSelector = '.post-author a',
-  optTagsListSelector = '.tags.list',
-  optTagsArrayListennerSelector = '.list.tags a';
+  //optTagsListSelector = '.tags.list',
+  optTagsArrayListennerSelector = '.list.tags a',
+  optCloudClassCount = 5,
+  optCloudClassPrefix = 'tag-size-';
 
 function generateTitleLinks(customSelector = ''){
   console.log('function starts');
@@ -279,55 +281,69 @@ function addClickListenersToAuthors(){
 
 addClickListenersToAuthors();
 
-function generateTagsRightSidebar(){
+function calculateTagsParams(tags){
+  const params = {max: 0, min: 999999};
+  for(let tag in tags){
+    console.log(tag + ' is used ' + tags[tag] + ' times');
+    if(tags[tag] > params.max){
+      params.max = tags[tag];
+      console.log('params.max: ' + params.max);
+    }
+    if(tags[tag] < params.min){
+      params.min = tags[tag];
+      console.log('params.min: ' + params.min);
+    }
+  }
+  return params;
+}
 
+function calculateTagsClass (count, params){
+  const normalizedCount = count - params.min;
+  const normalizedMax = params.max - params.min;
+  const percentage = normalizedCount / normalizedMax;
+  const classNumber = Math.floor(percentage * (optCloudClassCount - 1) + 1);
+  return optCloudClassPrefix + classNumber;
+}
+
+function generateTagsRightSidebar(){
   /* [NEW] create a new variable allTags with an empty object */
   let allTags = {};
-
   /* find all articles */
   const articles = document.querySelectorAll(optArticleSelector);
-
   /* START LOOP: for every article: */
   for(let article of articles){
-    /* find tags wrapper */
-    //const tagsWrapper = document.querySelector(optTagsListSelector);
-    /* make html variable with empty string */
-    //let html = '';
     /* get tags from data-tags attribute */
     const tagsAttribute = article.getAttribute('data-tags');
     /* split tags into array */
     const tags= tagsAttribute.split(' ');
     /* START LOOP: for each tag */
     for(let tag of tags){
-      /* generate HTML of the link */
-      //const linkHTML = '<li><a href="#tag-' + tag + '"><span>' + tag + '</span></a></li>';
-      /* add generated code to html variable */
-      //html = html + linkHTML;
-      //console.log('html tags right: ', html);
       /* [NEW] check if this tag is NOT already in allTags */
       if(!allTags[tag]){
         /* [NEW] if dosent set oject number in allTags to 1 else add the tag*/
         allTags[tag] = 1;
       } else {
         allTags[tag]++;
-        console.log('allTags: ', allTags);
       }
     }/* END LOOP: for each tag */
-    /* insert HTML of all the links into the tags wrapper */
-    //tagsWrapper.innerHTML = html;
-    //console.log('tagsWrapper: ', tagsWrapper);
   }/* END LOOP: for every article: */
+  console.log('allTags of object: ', allTags);
   /* [NEW] find list of tags in right column */
   const tagList = document.querySelector('.list.tags');
   /* [NEW] create variable for all links HTML code */
   let allTagsHTML = '';
+  const tagsParams = calculateTagsParams(allTags);
+  console.log('tagsParams: ', tagsParams);
   /* [NEW] START LOOP: for each tag in allTags: */
   for(let tag in allTags){
     /* [NEW] generate code of a link and add it to allTagsHTML */
-    allTagsHTML +='<li><a href="#tag-' + tag + '"><span>' + tag + ' (' + allTags[tag] + ')' + '</span></a></li> ';
+    const taglinkHTML = '<li><a class="' + calculateTagsClass(allTags[tag], tagsParams) + '" href="#tag-' + tag + '"><span>' + tag + ' (' +allTags[tag] + ')' + '</span></a></li>';
+    console.log('taglinkHTML: ', taglinkHTML);
+
+    allTagsHTML += taglinkHTML;
+    //allTagsHTML +='<li><a href="#tag-' + tag + ' class="" "><span>' + tag + ' (' + allTags[tag] + ')' + '</span></a></li> ';
     console.log('allTagsHTML: ', allTagsHTML);
-  }
-  /* [NEW] END LOOP: for each tag in allTags: */
+  }/* [NEW] END LOOP: for each tag in allTags: */
   /*[NEW] add HTML from allTagsHTML to tagList */
   tagList.innerHTML = allTagsHTML;
   console.log('tagList: ', tagList);
@@ -345,3 +361,7 @@ function addClickListenersToRightSidebar(){
 }
 
 addClickListenersToRightSidebar();
+
+/* Pytania do mentora:
+    - czy mogą być dwie funkcje o takiej samej nazwie?
+    - */
